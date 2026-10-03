@@ -1,0 +1,23 @@
+[
+  {
+    "runner_id": "R001",
+    "first_name": "Anna",
+    "last_name": "Kowalska",
+    "age": 32,
+    "email": "anna.kowalska@example.com"
+  },
+  {
+    "runner_id": "R002",
+    "first_name": "Piotr",
+    "last_name": "Nowak",
+    "age": 41,
+    "email": "piotr.nowak@example.com"
+  },
+  {
+    "runner_id": "R003",
+    "first_name": "Marta",
+    "last_name": "Wiśniewska",
+    "age": 27,
+    "email": "marta.wisniewska@example.com"
+  }
+]
