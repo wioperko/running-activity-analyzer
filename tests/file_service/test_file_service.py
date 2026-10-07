@@ -1,55 +1,37 @@
-from src.file_service import RunnerJsonFileReader, ActivityJsonDataReader
+from src.model import RunnerDataDict, ActivityDataDict
+from src.file_service import RunnerJsonFileReader, ActivityJsonDataReader, RunnerJsonFileWriter, ActivityJsonDataWriter
+from pathlib import Path
 import pytest
+import json
 
-def test_file_reader_runner() -> None:
+
+def test_file_reader_runner(runners_file: Path, runners_data : list[RunnerDataDict]) -> None:
     reader = RunnerJsonFileReader()
-    runners_data = [
-        {"runner_id" : "R001", "first_name" : "Anna", "last_name":"Kowalska", "age": 32, "email": "anna.kowalska@example.com"},
-        {"runner_id":"R002", "first_name":"Piotr", "last_name":"Nowak", "age":41, "email":"piotr.nowak@example.com"},
-        {"runner_id":"R003", "first_name":"Marta", "last_name":"Wiśniewska", "age":27, "email":"marta.wisniewska@example.com"}
-    ]
-
-    runners = reader.read('./data/runners.json')
-
-    assert runners == runners_data    
+    runners = reader.read(runners_file)
+    assert runners == runners_data
 
 
-def test_file_reader_runner_2(tmp_path) -> None:
-    file = tmp_path /'runners_tests.json'
-
-    file.write_text('[{"runner_id": "R001", "first_name": "Anna"}]', encoding="utf-8")
-
-    reader = RunnerJsonFileReader()
-
-    result = reader.read(file)
-
-    assert result == [{"runner_id": "R001", "first_name": "Anna"}]
-
-def test_file_reader_activity() -> None:
+def test_file_reader_activity(activities_file: Path, activities_data: list[ActivityDataDict]) -> None:
     reader = ActivityJsonDataReader()
+    activities = reader.read(activities_file)
+    assert activities == activities_data
 
-    activity_data = [
-        {"activity_id":"A001", "runner_id":"R001", "date": "2026-09-01", "activity_type": "RUNNING", "duration_minutes":45},
-        {"activity_id":"A002", "runner_id":"R001", "date": "2026-09-03", "activity_type": "STRENGTH", "duration_minutes":50},
-        {"activity_id":"A003", "runner_id":"R001", "date": "2026-09-05", "activity_type": "RUNNING", "duration_minutes":60},
-        {"activity_id":"A004", "runner_id":"R002", "date": "2026-09-02", "activity_type": "RUNNING", "duration_minutes":55},
-        {"activity_id":"A005", "runner_id":"R002", "date": "2026-09-04", "activity_type": "PILATES", "duration_minutes":45},
-        {"activity_id":"A006", "runner_id":"R003", "date": "2026-09-01", "activity_type": "SWIMMING", "duration_minutes":40},
-        {"activity_id":"A007", "runner_id":"R003", "date": "2026-09-06", "activity_type": "RUNNING", "duration_minutes":50},
-        {"activity_id":"A008", "runner_id":"R001", "date": "2026-09-08", "activity_type": "PILATES", "duration_minutes":60}
-    ]
 
-    result = reader.read('./data/activities.json')
+def test_write_runners(tmp_path:Path, runners_data:list[RunnerDataDict]) -> None:
+    writer = RunnerJsonFileWriter()
+    file_path = tmp_path/'runners_tests.json'
+    writer.write(file_path, runners_data)
 
-    assert activity_data == result
+    with open (file_path, 'r', encoding= 'utf-8') as file:
+        saved_data = json.load(file)
+    assert saved_data == runners_data
 
-def test_file_reader_activity_2(tmp_path) -> None:
-    file = tmp_path/'activity_tests.json'
+def test_write_ativity(tmp_path:Path, activities_data: list[ActivityDataDict]) -> None:
+    writer = ActivityJsonDataWriter()
+    file_path = tmp_path/'activities_tests.json'
+    writer.write(file_path, activities_data)
 
-    file.write_text('[{"activity_id":"A001", "runner_id":"R001", "date": "2026-09-01", "activity_type": "RUNNING", "duration_minutes":45}]', encoding='utf-8')
+    with open(file_path, 'r', encoding='utf-8') as file:
+        saved_data = json.load(file)
 
-    reader = ActivityJsonDataReader()
-
-    result = reader.read(file)
-
-    assert result == [{"activity_id":"A001", "runner_id":"R001", "date": "2026-09-01", "activity_type": "RUNNING", "duration_minutes":45}]
+    assert saved_data == activities_data
