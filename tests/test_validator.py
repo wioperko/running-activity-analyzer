@@ -38,6 +38,15 @@ def test_if_is_valid_value_of(value:str, enum_class:Type[Enum], expected: bool) 
 def test_if_valid_email( email:str, expected:bool)-> None:
     assert Validator.is_valid_email(email) == expected
 
+
+@pytest.mark.parametrize('value, expected',[
+    ('2026-10-04', True),
+    ('2026-02-30', False),
+    ('abc', False)
+])
+def test_is_valid_date(value:str, expected: bool) -> None:
+    assert Validator.is_valid_date(value) == expected
+
 @pytest.mark.parametrize('data, expected',[
     ({"runner_id" : "R001", "first_name" : "Anna", "last_name":"Kowalska", "age": 32, "email": "anna.kowalska@example.com"}, True),
     ({"runner_id":"R002", "first_name":"Piotr", "last_name":"Nowak", "age":41, "e":"piotr.nowak@example.com"}, False),
@@ -78,8 +87,9 @@ def test_runners_data_dict_validator_missing_keys(data:RunnerDataDict, expected:
     ({"activity_id": "A001", "runner_id": "R001", "date": "2026-09-01", "duration_minutes": 45 }, False),
     ({"activity_id": "A001", "runner_id": "R001", "activity_type": "Running","duration_minutes": 45 }, False),
     ({"activity_id": "A001", "date": "2026-09-01", "activity_type": "Running","duration_minutes": 45 }, False),
-    ({"runner_id": "R001", "date": "2026-09-01", "activity_type": "Running","duration_minutes": 45 }, False)
+    ({"runner_id": "R001", "date": "2026-09-01", "activity_type": "Running","duration_minutes": 45 }, False),
+    ({"activity_id": "A001", "runner_id": "R001", "date": "2026-09-32", "activity_type": "Running","duration_minutes": 45 }, False),
 ])
-def test_activity_data_dict_validator_missing_keys(data:ActivityDataDict, expected: bool) -> None:
+def test_activity_data_dict_validator(data:ActivityDataDict, expected: bool) -> None:
     validator = ActivityDataDictValidator()
     assert validator.validate(data) == expected

@@ -3,6 +3,7 @@ from src.model import RunnerDataDict, ActivityDataDict, ActivityType
 from typing import Type, override
 from enum import Enum
 from email_validator import validate_email, EmailNotValidError
+from datetime import date
 from collections.abc import Mapping
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -43,6 +44,17 @@ class Validator[T: Mapping[str, object]]:
             logging.error(str(e))
             return False
 
+    @staticmethod
+    def is_valid_date(date_value:str) -> bool:
+        try:
+            date.fromisoformat(date_value)
+            return True
+        except ValueError:
+            return False
+
+
+# TODO: Add logging to concrete validators to identify invalid fields
+# and record IDs. Keep helper methods focused on returning bool.
 @dataclass
 class RunnerDataDictValidator(Validator[RunnerDataDict]):
 
@@ -53,6 +65,8 @@ class RunnerDataDictValidator(Validator[RunnerDataDict]):
     def validate(self, data: RunnerDataDict) -> bool:
         return super().validate(data) and self.is_valid_email(data['email'])
 
+# TODO: Add logging to concrete validators to identify invalid fields
+# and record IDs. Keep helper methods focused on returning bool.
 @dataclass
 class ActivityDataDictValidator(Validator[ActivityDataDict]):
 
@@ -62,6 +76,6 @@ class ActivityDataDictValidator(Validator[ActivityDataDict]):
 
     @override
     def validate(self, data: ActivityDataDict) -> bool:
-        return super().validate(data) and self.is_valid_value_of(data['activity_type'], ActivityType)
+        return super().validate(data) and self.is_valid_value_of(data['activity_type'], ActivityType) and self.is_valid_date(data['date'])
 
 
