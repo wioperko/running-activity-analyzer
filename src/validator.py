@@ -41,8 +41,7 @@ class Validator[T: Mapping[str, object]]:
         try:
             validate_email(email, check_deliverability = False)
             return True
-        except EmailNotValidError as e:
-            logging.error(str(e))
+        except EmailNotValidError:
             return False
 
     @staticmethod
