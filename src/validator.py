@@ -20,10 +20,11 @@ class Validator[T: Mapping[str, object]]:
         return self.has_required_keys(data)
 
     def has_required_keys(self,data:T) -> bool:
-       
-        for key in self.required_keys:
-            if key not in data:
-                return False
+        missing_keys = [key for key in self.required_keys if key not in data]
+
+        if missing_keys:
+            logging.error(f"Missing required keys: {missing_keys}")
+            return False
         return True
 
         
@@ -53,8 +54,7 @@ class Validator[T: Mapping[str, object]]:
             return False
 
 
-# TODO: Add logging to concrete validators to identify invalid fields
-# and record IDs. Keep helper methods focused on returning bool.
+# TODO: Include record IDs in missing-key logs.
 @dataclass
 class RunnerDataDictValidator(Validator[RunnerDataDict]):
 
@@ -63,10 +63,15 @@ class RunnerDataDictValidator(Validator[RunnerDataDict]):
             self.required_keys = ['runner_id', 'first_name', 'last_name', 'age', 'email']
     @override
     def validate(self, data: RunnerDataDict) -> bool:
-        return super().validate(data) and self.is_valid_email(data['email'])
+        if not super().validate(data):
+            return False
+        if not self.is_valid_email(data['email']):
+            logging.error(f"Invalid email for runner_id: {data['runner_id']}")
+            return False
+        
+        return True
 
-# TODO: Add logging to concrete validators to identify invalid fields
-# and record IDs. Keep helper methods focused on returning bool.
+# TODO: Include record IDs in missing-key logs.
 @dataclass
 class ActivityDataDictValidator(Validator[ActivityDataDict]):
 
@@ -76,6 +81,24 @@ class ActivityDataDictValidator(Validator[ActivityDataDict]):
 
     @override
     def validate(self, data: ActivityDataDict) -> bool:
-        return super().validate(data) and self.is_valid_value_of(data['activity_type'], ActivityType) and self.is_valid_date(data['date'])
+        if not super().validate(data):
+            return False
+        
+        if not self.is_valid_value_of(data['activity_type'], ActivityType):
+            logging.error(
+                f'Invalid activity_type for activity_id={data["activity_id"]}: '
+                f'{data["activity_type"]}'
+            )
+            return False
+
+        if not self.is_valid_date(data['date']):
+            logging.error(
+                f'Invalid date for activity_id={data["activity_id"]}: '
+                f'{data["date"]}'
+            )
+            return False
+
+        return True
+    
 
 
