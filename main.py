@@ -1,7 +1,25 @@
 from src.file_service import RunnerJsonFileReader, ActivityJsonDataReader, RunnerJsonFileWriter, ActivityJsonDataWriter
+import logging
+from src.validator import ActivityDataDictValidator
+
+logging.basicConfig(level=logging.ERROR)
 
 def main():
     pass
+    
+#     validator = ActivityDataDictValidator()
+
+# # Invalid activity type
+#     activity_1 = {"activity_id": "A001", "runner_id": "R001", "date": "2026-09-01", "activity_type": "Other", "duration_minutes": 45}
+
+#     validator.validate(activity_1)
+
+# # Invalid date
+#     activity_2 = { "activity_id": "A002", "runner_id": "R001", "date": "2026-02-30", "activity_type": "Running", "duration_minutes": 45}
+
+#     validator.validate(activity_2)
+
+    
   
     # runners_json_file_reader = RunnerJsonFileReader()
     # runners = runners_json_file_reader.read('./data/runners.json')

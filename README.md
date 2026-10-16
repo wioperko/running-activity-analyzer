@@ -156,7 +156,9 @@ Validation will include, among other things:
 
 Data retrieved from JSON files will be converted into appropriate Python objects.
 
-Numeric values for which precision is important will be represented using `Decimal`.
+* ISO-formatted date strings will be converted into `date` objects.
+* Activity type strings will be converted into `ActivityType` enum members.
+* Other values will be represented according to the types defined in the domain models.
 
 ## Repositories
 
