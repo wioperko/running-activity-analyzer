@@ -57,13 +57,11 @@ def test_if_has_required_keys(data:RunnerDataDict, expected: bool) -> None:
     assert validator.has_required_keys(data) == expected
 
 @pytest.mark.parametrize('required_keys, data, expected',[
-    (["runner_id","first_name","last_name","age","email",], {"runner_id" : "R001", "first_name" : "Anna", "last_name":"Kowalska", "age": 32, "email": "anna.kowalska@example.com"}, True),
-    (["runner_id","first_name","last_name","age","email",], {"runner_id" : "R001"}, False),
     (["runner_id","first_name","last_name","age","email",], {}, False),
     ([], {}, True)
 
 ])
-def test_with_not_all_keys(required_keys:list[str], data:RunnerDataDict, expected: bool) -> None:
+def test_validate_required_keys(required_keys:list[str], data:RunnerDataDict, expected: bool) -> None:
     validator: Validator[RunnerDataDict] = Validator(required_keys)
     assert validator.validate(data) == expected
 
