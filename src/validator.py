@@ -6,7 +6,8 @@ from email_validator import validate_email, EmailNotValidError
 from datetime import date
 from collections.abc import Mapping
 import logging
-logging.basicConfig(level=logging.INFO)
+
+logger = logging.getLogger(__name__)
 
 
 
@@ -23,7 +24,7 @@ class Validator[T: Mapping[str, object]]:
         missing_keys = [key for key in self.required_keys if key not in data]
 
         if missing_keys:
-            logging.error(f"Missing required keys: {missing_keys}")
+            logger.error("Missing required keys: %s", missing_keys)
             return False
         return True
 
@@ -65,7 +66,7 @@ class RunnerDataDictValidator(Validator[RunnerDataDict]):
         if not super().validate(data):
             return False
         if not self.is_valid_email(data['email']):
-            logging.error(f"Invalid email for runner_id: {data['runner_id']}")
+            logger.error("Invalid email for runner_id=%s", data["runner_id"])
             return False
         
         return True
@@ -84,16 +85,18 @@ class ActivityDataDictValidator(Validator[ActivityDataDict]):
             return False
         
         if not self.is_valid_value_of(data['activity_type'], ActivityType):
-            logging.error(
-                f'Invalid activity_type for activity_id={data["activity_id"]}: '
-                f'{data["activity_type"]}'
+            logger.error(
+                'Invalid activity_type for activity_id=%s: %s',
+                data["activity_id"],
+                data["activity_type"],
             )
             return False
 
         if not self.is_valid_date(data['date']):
-            logging.error(
-                f'Invalid date for activity_id={data["activity_id"]}: '
-                f'{data["date"]}'
+            logger.error(
+                'Invalid date for activity_id=%s: %s',
+                data["activity_id"],
+                data["date"],
             )
             return False
 
