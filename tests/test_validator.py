@@ -19,9 +19,9 @@ def test_is_positive(value: int |str , expected: bool) -> None:
 
 
 @pytest.mark.parametrize('value, enum_class, expected',[
-    ('Running', ActivityType, True),
-    ('Swimming', ActivityType, True),
-    ('RUNNING', ActivityType, False),
+    ('RUNNING', ActivityType, True),
+    ('SWIMMING', ActivityType, True),
+    ('Running', ActivityType, False),
     ('Other', ActivityType, False),
     (' ', ActivityType, False)
 ])
@@ -80,13 +80,13 @@ def test_runners_data_dict_validator_missing_keys(data:RunnerDataDict, expected:
 
 
 @pytest.mark.parametrize('data, expected', [
-    ({"activity_id": "A001", "runner_id": "R001", "date": "2026-09-01", "activity_type": "Running","duration_minutes": 45 }, True),
-    ({"activity_id": "A001", "runner_id": "R001", "date": "2026-09-01", "activity_type": "Running" }, False),
+    ({"activity_id": "A001", "runner_id": "R001", "date": "2026-09-01", "activity_type": "RUNNING","duration_minutes": 45 }, True),
+    ({"activity_id": "A001", "runner_id": "R001", "date": "2026-09-01", "activity_type": "RUNNING" }, False),
     ({"activity_id": "A001", "runner_id": "R001", "date": "2026-09-01", "duration_minutes": 45 }, False),
-    ({"activity_id": "A001", "runner_id": "R001", "activity_type": "Running","duration_minutes": 45 }, False),
-    ({"activity_id": "A001", "date": "2026-09-01", "activity_type": "Running","duration_minutes": 45 }, False),
-    ({"runner_id": "R001", "date": "2026-09-01", "activity_type": "Running","duration_minutes": 45 }, False),
-    ({"activity_id": "A001", "runner_id": "R001", "date": "2026-09-32", "activity_type": "Running","duration_minutes": 45 }, False),
+    ({"activity_id": "A001", "runner_id": "R001", "activity_type": "RUNNING","duration_minutes": 45 }, False),
+    ({"activity_id": "A001", "date": "2026-09-01", "activity_type": "RUNNING","duration_minutes": 45 }, False),
+    ({"runner_id": "R001", "date": "2026-09-01", "activity_type": "RUNNING","duration_minutes": 45 }, False),
+    ({"activity_id": "A001", "runner_id": "R001", "date": "2026-09-32", "activity_type": "RUNNING","duration_minutes": 45 }, False),
 ])
 def test_activity_data_dict_validator(data:ActivityDataDict, expected: bool) -> None:
     validator = ActivityDataDictValidator()

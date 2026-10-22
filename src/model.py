@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import TypedDict
-from enum import Enum
+from enum import StrEnum
 from datetime import date
 
 class RunnerDataDict(TypedDict):
@@ -18,11 +18,12 @@ class ActivityDataDict(TypedDict):
     activity_type: str
     duration_minutes: int 
 
-class ActivityType(Enum):
-      RUNNING = 'Running'
-      STRENGTH = 'Strength'
-      PILATES = "Pilates"
-      SWIMMING = "Swimming"
+class ActivityType(StrEnum):
+    RUNNING = "RUNNING"
+    CYCLING = "CYCLING"
+    SWIMMING = "SWIMMING"
+    STRENGTH = "STRENGTH"
+    PILATES = "PILATES"
 
 @dataclass
 class Runner:

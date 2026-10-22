@@ -26,11 +26,11 @@ def test_runner_converter_from_json( data:RunnerDataDict, runner:Runner ) -> Non
 
 @pytest.mark.parametrize( 'data, activity', [
     (
-        {"activity_id": "A001", "runner_id": "R001", "date": "2026-09-01", "activity_type": "Running", "duration_minutes": 45},
+        {"activity_id": "A001", "runner_id": "R001", "date": "2026-09-01", "activity_type": "RUNNING", "duration_minutes": 45},
         Activity(activity_id="A001", runner_id="R001", date=date.fromisoformat("2026-09-01"), activity_type= ActivityType.RUNNING, duration_minutes=45)
     ),
     (
-        {"activity_id": "A002", "runner_id": "R001",  "date": "2026-09-03", "activity_type": "Strength", "duration_minutes": 50},
+        {"activity_id": "A002", "runner_id": "R001",  "date": "2026-09-03", "activity_type": "STRENGTH", "duration_minutes": 50},
         Activity(activity_id="A002", runner_id= "R001", date = date.fromisoformat("2026-09-03"), activity_type= ActivityType.STRENGTH, duration_minutes=50)
     )
     

@@ -29,7 +29,7 @@ def test_activity_to_dict(activity1: Activity):
         "activity_id": "A001",
         "runner_id": "R001",
         "date": "2026-09-01",
-        "activity_type": "Running",
+        "activity_type": "RUNNING",
         "duration_minutes": 45
     }
 
