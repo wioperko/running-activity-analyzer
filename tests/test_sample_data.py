@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from src.converter import ActivityConverter
-from src.file_service import ActivityJsonDataReader
-from src.validator import ActivityDataDictValidator
+from running_activity_analyzer.converter import ActivityConverter
+from running_activity_analyzer.file_service import ActivityJsonDataReader
+from running_activity_analyzer.validator import ActivityDataDictValidator
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 

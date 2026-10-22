@@ -1,7 +1,8 @@
 from dataclasses import dataclass
-from typing import TypedDict
-from enum import StrEnum
 from datetime import date
+from enum import StrEnum
+from typing import TypedDict
+
 
 class RunnerDataDict(TypedDict):
     runner_id: str
@@ -12,11 +13,12 @@ class RunnerDataDict(TypedDict):
 
 
 class ActivityDataDict(TypedDict):
-    activity_id: str    
+    activity_id: str
     runner_id: str
     date: str
     activity_type: str
-    duration_minutes: int 
+    duration_minutes: int
+
 
 class ActivityType(StrEnum):
     RUNNING = "RUNNING"
@@ -24,6 +26,7 @@ class ActivityType(StrEnum):
     SWIMMING = "SWIMMING"
     STRENGTH = "STRENGTH"
     PILATES = "PILATES"
+
 
 @dataclass
 class Runner:
@@ -34,27 +37,28 @@ class Runner:
     email: str
 
     def to_dict(self) -> RunnerDataDict:
-          return{
-                "runner_id": self.runner_id,
-                "first_name": self.first_name,
-                "last_name": self.last_name,
-                "age":  self.age,
-                "email": self.email
-          }
+        return {
+            "runner_id": self.runner_id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "age": self.age,
+            "email": self.email,
+        }
+
 
 @dataclass
 class Activity:
-    activity_id: str    
+    activity_id: str
     runner_id: str
     date: date
     activity_type: ActivityType
-    duration_minutes: int 
+    duration_minutes: int
 
     def to_dict(self) -> ActivityDataDict:
-         return {
-            "activity_id": self.activity_id,    
+        return {
+            "activity_id": self.activity_id,
             "runner_id": self.runner_id,
             "date": self.date.isoformat(),
             "activity_type": self.activity_type.value,
-            "duration_minutes": self.duration_minutes
-         }
+            "duration_minutes": self.duration_minutes,
+        }
