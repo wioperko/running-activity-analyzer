@@ -4,17 +4,17 @@ from enum import StrEnum
 from typing import TypedDict
 
 
-class RunnerDataDict(TypedDict):
-    runner_id: str
+class ParticipantDataDict(TypedDict):
+    participant_id: str
     first_name: str
     last_name: str
-    age: int
+    birth_date: str
     email: str
 
 
 class ActivityDataDict(TypedDict):
     activity_id: str
-    runner_id: str
+    participant_id: str
     date: str
     activity_type: str
     duration_minutes: int
@@ -28,37 +28,37 @@ class ActivityType(StrEnum):
     PILATES = "PILATES"
 
 
-@dataclass
-class Runner:
-    runner_id: str
+@dataclass(frozen=True)
+class Participant:
+    participant_id: str
     first_name: str
     last_name: str
-    age: int
+    birth_date: date
     email: str
 
-    def to_dict(self) -> RunnerDataDict:
+    def to_dict(self) -> ParticipantDataDict:
         return {
-            "runner_id": self.runner_id,
+            "participant_id": self.participant_id,
             "first_name": self.first_name,
             "last_name": self.last_name,
-            "age": self.age,
+            "birth_date": self.birth_date.isoformat(),
             "email": self.email,
         }
 
 
-@dataclass
+@dataclass(frozen=True)
 class Activity:
     activity_id: str
-    runner_id: str
-    date: date
+    participant_id: str
+    performed_on: date
     activity_type: ActivityType
     duration_minutes: int
 
     def to_dict(self) -> ActivityDataDict:
         return {
             "activity_id": self.activity_id,
-            "runner_id": self.runner_id,
-            "date": self.date.isoformat(),
+            "participant_id": self.participant_id,
+            "date": self.performed_on.isoformat(),
             "activity_type": self.activity_type.value,
             "duration_minutes": self.duration_minutes,
         }

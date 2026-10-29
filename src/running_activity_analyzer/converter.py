@@ -6,8 +6,8 @@ from running_activity_analyzer.model import (
     Activity,
     ActivityDataDict,
     ActivityType,
-    Runner,
-    RunnerDataDict,
+    Participant,
+    ParticipantDataDict,
 )
 
 
@@ -17,14 +17,14 @@ class Converter[T, U](ABC):
         pass
 
 
-class RunnerConverter(Converter[RunnerDataDict, Runner]):
+class ParticipantConverter(Converter[ParticipantDataDict, Participant]):
     @override
-    def convert(self, data: RunnerDataDict) -> Runner:
-        return Runner(
-            runner_id=data["runner_id"],
+    def convert(self, data: ParticipantDataDict) -> Participant:
+        return Participant(
+            participant_id=data["participant_id"],
             first_name=data["first_name"],
             last_name=data["last_name"],
-            age=data["age"],
+            birth_date=date.fromisoformat(data["birth_date"]),
             email=data["email"],
         )
 
@@ -34,8 +34,8 @@ class ActivityConverter(Converter[ActivityDataDict, Activity]):
     def convert(self, data: ActivityDataDict) -> Activity:
         return Activity(
             activity_id=data["activity_id"],
-            runner_id=data["runner_id"],
-            date=date.fromisoformat(data["date"]),
+            participant_id=data["participant_id"],
+            performed_on=date.fromisoformat(data["date"]),
             activity_type=ActivityType(data["activity_type"]),
             duration_minutes=data["duration_minutes"],
         )

@@ -2,62 +2,65 @@ from datetime import date
 
 import pytest
 
-from running_activity_analyzer.converter import ActivityConverter, RunnerConverter
+from running_activity_analyzer.converter import ActivityConverter, ParticipantConverter
 from running_activity_analyzer.model import (
     Activity,
     ActivityDataDict,
     ActivityType,
-    Runner,
-    RunnerDataDict,
+    Participant,
+    ParticipantDataDict,
 )
 
 
 @pytest.mark.parametrize(
-    "data, runner",
+    "data, participant",
     [
         (
             {
-                "runner_id": "R001",
+                "participant_id": "P001",
                 "first_name": "Anna",
                 "last_name": "Kowalska",
-                "age": 32,
+                "birth_date": "1994-06-15",
                 "email": "anna.kowalska@example.com",
             },
-            Runner(
-                runner_id="R001",
+            Participant(
+                participant_id="P001",
                 first_name="Anna",
                 last_name="Kowalska",
-                age=32,
+                birth_date=date(1994, 6, 15),
                 email="anna.kowalska@example.com",
             ),
         ),
         (
             {
-                "runner_id": "R002",
+                "participant_id": "P002",
                 "first_name": "Piotr",
                 "last_name": "Nowak",
-                "age": 41,
+                "birth_date": "1984-06-15",
                 "email": "piotr.nowak@example.com",
             },
-            Runner(
-                runner_id="R002",
+            Participant(
+                participant_id="P002",
                 first_name="Piotr",
                 last_name="Nowak",
-                age=41,
+                birth_date=date(1984, 6, 15),
                 email="piotr.nowak@example.com",
             ),
         ),
     ],
 )
-def test_runner_converter_from_json(data: RunnerDataDict, runner: Runner) -> None:
+def test_participant_converter_from_json(
+    data: ParticipantDataDict,
+    participant: Participant,
+) -> None:
 
-    converter = RunnerConverter()
+    converter = ParticipantConverter()
     result = converter.convert(data)
-    assert result.runner_id == runner.runner_id
-    assert result.first_name == runner.first_name
-    assert result.last_name == runner.last_name
-    assert result.age == runner.age
-    assert result.email == runner.email
+    assert result.participant_id == participant.participant_id
+    assert result.first_name == participant.first_name
+    assert result.last_name == participant.last_name
+    assert result.birth_date == participant.birth_date
+    assert result.email == participant.email
 
 
 @pytest.mark.parametrize(
@@ -66,15 +69,15 @@ def test_runner_converter_from_json(data: RunnerDataDict, runner: Runner) -> Non
         (
             {
                 "activity_id": "A001",
-                "runner_id": "R001",
+                "participant_id": "P001",
                 "date": "2026-09-01",
                 "activity_type": "RUNNING",
                 "duration_minutes": 45,
             },
             Activity(
                 activity_id="A001",
-                runner_id="R001",
-                date=date.fromisoformat("2026-09-01"),
+                participant_id="P001",
+                performed_on=date.fromisoformat("2026-09-01"),
                 activity_type=ActivityType.RUNNING,
                 duration_minutes=45,
             ),
@@ -82,15 +85,15 @@ def test_runner_converter_from_json(data: RunnerDataDict, runner: Runner) -> Non
         (
             {
                 "activity_id": "A002",
-                "runner_id": "R001",
+                "participant_id": "P001",
                 "date": "2026-09-03",
                 "activity_type": "STRENGTH",
                 "duration_minutes": 50,
             },
             Activity(
                 activity_id="A002",
-                runner_id="R001",
-                date=date.fromisoformat("2026-09-03"),
+                participant_id="P001",
+                performed_on=date.fromisoformat("2026-09-03"),
                 activity_type=ActivityType.STRENGTH,
                 duration_minutes=50,
             ),
@@ -104,7 +107,7 @@ def test_activity_converter_from_json(
     converter = ActivityConverter()
     result = converter.convert(data)
     assert result.activity_id == activity.activity_id
-    assert result.runner_id == activity.runner_id
-    assert result.date == activity.date
+    assert result.participant_id == activity.participant_id
+    assert result.performed_on == activity.performed_on
     assert result.activity_type == activity.activity_type
     assert result.duration_minutes == activity.duration_minutes
