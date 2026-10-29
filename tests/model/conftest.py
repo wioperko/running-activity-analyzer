@@ -1,0 +1,113 @@
+from datetime import date
+
+import pytest
+
+from running_activity_analyzer.model import Activity, ActivityType, Participant
+
+
+@pytest.fixture
+def participant1() -> Participant:
+    return Participant(
+        participant_id="P001",
+        first_name="Anna",
+        last_name="Kowalska",
+        birth_date=date(1994, 6, 15),
+        email="anna.kowalska@example.com",
+    )
+
+
+@pytest.fixture
+def participant2() -> Participant:
+    return Participant(
+        participant_id="P002",
+        first_name="Piotr",
+        last_name="Nowak",
+        birth_date=date(1984, 6, 15),
+        email="piotr.nowak@example.com",
+    )
+
+
+@pytest.fixture
+def participant3() -> Participant:
+    return Participant(
+        participant_id="P003",
+        first_name="Julia",
+        last_name="Wiśniewska",
+        birth_date=date(2000, 6, 15),
+        email="julia.wisniewska@example.com",
+    )
+
+
+@pytest.fixture
+def participants(
+    participant1: Participant,
+    participant2: Participant,
+    participant3: Participant,
+) -> list[Participant]:
+    return [participant1, participant2, participant3]
+
+
+@pytest.fixture
+def activity1() -> Activity:
+    return Activity(
+        activity_id="A001",
+        participant_id="P001",
+        performed_on=date(2026, 9, 1),
+        activity_type=ActivityType.RUNNING,
+        duration_minutes=45,
+    )
+
+
+@pytest.fixture
+def activity2() -> Activity:
+    return Activity(
+        activity_id="A002",
+        participant_id="P001",
+        performed_on=date(2026, 9, 3),
+        activity_type=ActivityType.PILATES,
+        duration_minutes=50,
+    )
+
+
+@pytest.fixture
+def activity3() -> Activity:
+    return Activity(
+        activity_id="A003",
+        participant_id="P002",
+        performed_on=date(2026, 9, 2),
+        activity_type=ActivityType.STRENGTH,
+        duration_minutes=60,
+    )
+
+
+@pytest.fixture
+def activity4() -> Activity:
+    return Activity(
+        activity_id="A004",
+        participant_id="P002",
+        performed_on=date(2026, 9, 5),
+        activity_type=ActivityType.RUNNING,
+        duration_minutes=35,
+    )
+
+
+@pytest.fixture
+def activity5() -> Activity:
+    return Activity(
+        activity_id="A005",
+        participant_id="P003",
+        performed_on=date(2026, 9, 4),
+        activity_type=ActivityType.SWIMMING,
+        duration_minutes=40,
+    )
+
+
+@pytest.fixture
+def activities(
+    activity1: Activity,
+    activity2: Activity,
+    activity3: Activity,
+    activity4: Activity,
+    activity5: Activity,
+) -> list[Activity]:
+    return [activity1, activity2, activity3, activity4, activity5]
