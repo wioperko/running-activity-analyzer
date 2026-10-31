@@ -37,7 +37,6 @@ class ValidationResult:
 
 
 @dataclass
-@dataclass
 class UniqueIdValidator:
     field_name: str
 
@@ -85,7 +84,7 @@ class Validator[T: Mapping[str, object]]:
 
     @staticmethod
     def get_record_id(data: Mapping[str, object]) -> str | None:
-        for key in ("participant_id", "activity_id"):
+        for key in ("activity_id", "participant_id"):
             value = data.get(key)
             if isinstance(value, str):
                 return value
@@ -100,8 +99,12 @@ class Validator[T: Mapping[str, object]]:
         return True
 
     @staticmethod
+    def is_non_empty_string(value: object) -> bool:
+        return isinstance(value, str) and bool(value.strip())
+
+    @staticmethod
     def is_positive(data: int | str) -> bool:
-        return isinstance(data, int) and data > 0
+        return type(data) is int and data > 0
 
     @staticmethod
     def is_int_in_range(value: object, minimum: int, maximum: int) -> bool:
@@ -116,7 +119,10 @@ class Validator[T: Mapping[str, object]]:
         return value in [item.value for item in enum_class]
 
     @staticmethod
-    def is_valid_email(email: str) -> bool:
+    def is_valid_email(email: object) -> bool:
+        if not isinstance(email, str):
+            return False
+
         try:
             validate_email(email, check_deliverability=False)
             return True
@@ -163,6 +169,14 @@ class ParticipantDataDictValidator(Validator[ParticipantDataDict]):
     def validate(self, data: ParticipantDataDict) -> ValidationResult:
         result = super().validate(data)
         record_id = self.get_record_id(data)
+
+        for field_name in ("first_name", "last_name"):
+            if field_name in data and not self.is_non_empty_string(data[field_name]):
+                result.add(
+                    record_id=record_id,
+                    field_name=field_name,
+                    message=f"{field_name} must be a non-empty string",
+                )
 
         if "participant_id" in data and not self.is_valid_id(
             data["participant_id"], "P"
