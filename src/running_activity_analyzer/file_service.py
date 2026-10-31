@@ -1,23 +1,33 @@
 import json
 from pathlib import Path
 
-from running_activity_analyzer.model import ActivityDataDict, ParticipantDataDict
+
+class InvalidJsonFileError(Exception):
+    pass
 
 
-class FileReader[T]:
-    def read(self, filename: str | Path) -> list[T]:
-        with open(filename, encoding="utf-8") as file:
-            data = json.load(file)
+class FileReader:
+    def read(self, filename: str | Path) -> list[dict[str, object]]:
+        try:
+            with open(filename, encoding="utf-8") as file:
+                data: object = json.load(file)
 
-            if not isinstance(data, list):
-                raise ValueError(f"Expected a JSON array in {filename}")
+        except (OSError, json.JSONDecodeError) as error:
+            raise InvalidJsonFileError(f"Cannot read JSON file: {filename}") from error
+
+        if not isinstance(data, list) or not all(
+            isinstance(item, dict) for item in data
+        ):
+            raise InvalidJsonFileError(
+                f"Expected a JSON array of objects in {filename}"
+            )
 
         return data
 
 
-class ParticipantJsonFileReader(FileReader[ParticipantDataDict]):
+class ParticipantJsonFileReader(FileReader):
     pass
 
 
-class ActivityJsonDataReader(FileReader[ActivityDataDict]):
+class ActivityJsonDataReader(FileReader):
     pass

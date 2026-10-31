@@ -52,7 +52,7 @@ def test_if_has_required_keys(data: ParticipantDataDict, expected: bool) -> None
         "birth_date",
         "email",
     ]
-    validator: Validator[ParticipantDataDict] = Validator(required_keys)
+    validator = Validator(required_keys)
     assert validator.has_required_keys(data) == expected
 
 
@@ -76,7 +76,7 @@ def test_if_has_required_keys(data: ParticipantDataDict, expected: bool) -> None
 def test_validate_required_keys(
     required_keys: list[str], data: ParticipantDataDict, expected: bool
 ) -> None:
-    validator: Validator[ParticipantDataDict] = Validator(required_keys)
+    validator = Validator(required_keys)
     result = validator.validate(data)
     assert result.is_valid == expected, result.errors
 

@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import cast
 
 from running_activity_analyzer.converter import (
     ActivityConverter,
@@ -8,6 +9,7 @@ from running_activity_analyzer.file_service import (
     ActivityJsonDataReader,
     ParticipantJsonFileReader,
 )
+from running_activity_analyzer.model import ActivityDataDict, ParticipantDataDict
 from running_activity_analyzer.validator import (
     ActivityDataDictValidator,
     ParticipantDataDictValidator,
@@ -25,7 +27,8 @@ def test_sample_activities_are_valid_and_convertible() -> None:
     for record in records:
         result = validator.validate(record)
         assert result.is_valid, result.errors
-        converter.convert(record)
+        activity = converter.convert(cast(ActivityDataDict, record))
+        assert activity.activity_id == record["activity_id"]
 
     unique_ids_result = UniqueIdValidator(field_name="activity_id").validate(records)
 
@@ -40,7 +43,8 @@ def test_sample_participants_are_valid_and_convertible() -> None:
     for record in records:
         result = validator.validate(record)
         assert result.is_valid, result.errors
-        converter.convert(record)
+        participant = converter.convert(cast(ParticipantDataDict, record))
+        assert participant.participant_id == record["participant_id"]
 
     unique_ids_result = UniqueIdValidator(field_name="participant_id").validate(records)
 

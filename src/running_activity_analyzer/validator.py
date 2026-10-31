@@ -9,9 +9,7 @@ from typing import ClassVar, override
 from email_validator import EmailNotValidError, validate_email
 
 from running_activity_analyzer.model import (
-    ActivityDataDict,
     ActivityType,
-    ParticipantDataDict,
 )
 
 logger = logging.getLogger(__name__)
@@ -66,10 +64,10 @@ class UniqueIdValidator:
 
 
 @dataclass
-class Validator[T: Mapping[str, object]]:
+class Validator:
     required_keys: list[str] = field(default_factory=list)
 
-    def validate(self, data: T) -> ValidationResult:
+    def validate(self, data: Mapping[str, object]) -> ValidationResult:
         result = ValidationResult()
         record_id = self.get_record_id(data)
 
@@ -90,7 +88,7 @@ class Validator[T: Mapping[str, object]]:
                 return value
         return None
 
-    def has_required_keys(self, data: T) -> bool:
+    def has_required_keys(self, data: Mapping[str, object]) -> bool:
         missing_keys = [key for key in self.required_keys if key not in data]
 
         if missing_keys:
@@ -115,8 +113,8 @@ class Validator[T: Mapping[str, object]]:
         )
 
     @staticmethod
-    def is_valid_value_of(value: str, enum_class: type[Enum]) -> bool:
-        return value in [item.value for item in enum_class]
+    def is_valid_value_of(value: object, enum_class: type[Enum]) -> bool:
+        return isinstance(value, str) and value in [item.value for item in enum_class]
 
     @staticmethod
     def is_valid_email(email: object) -> bool:
@@ -154,7 +152,7 @@ class Validator[T: Mapping[str, object]]:
 
 
 @dataclass
-class ParticipantDataDictValidator(Validator[ParticipantDataDict]):
+class ParticipantDataDictValidator(Validator):
     def __post_init__(self) -> None:
         if not self.required_keys:
             self.required_keys = [
@@ -166,7 +164,7 @@ class ParticipantDataDictValidator(Validator[ParticipantDataDict]):
             ]
 
     @override
-    def validate(self, data: ParticipantDataDict) -> ValidationResult:
+    def validate(self, data: Mapping[str, object]) -> ValidationResult:
         result = super().validate(data)
         record_id = self.get_record_id(data)
 
@@ -214,7 +212,7 @@ class ParticipantDataDictValidator(Validator[ParticipantDataDict]):
 
 
 @dataclass
-class ActivityDataDictValidator(Validator[ActivityDataDict]):
+class ActivityDataDictValidator(Validator):
     MIN_DURATION_MINUTES: ClassVar[int] = 1
     MAX_DURATION_MINUTES: ClassVar[int] = 1440
 
@@ -229,7 +227,7 @@ class ActivityDataDictValidator(Validator[ActivityDataDict]):
             ]
 
     @override
-    def validate(self, data: ActivityDataDict) -> ValidationResult:
+    def validate(self, data: Mapping[str, object]) -> ValidationResult:
         result = super().validate(data)
         record_id = self.get_record_id(data)
 
