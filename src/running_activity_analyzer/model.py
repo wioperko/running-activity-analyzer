@@ -28,7 +28,7 @@ class ActivityType(StrEnum):
     PILATES = "PILATES"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Participant:
     participant_id: str
     first_name: str
@@ -36,29 +36,11 @@ class Participant:
     birth_date: date
     email: str
 
-    def to_dict(self) -> ParticipantDataDict:
-        return {
-            "participant_id": self.participant_id,
-            "first_name": self.first_name,
-            "last_name": self.last_name,
-            "birth_date": self.birth_date.isoformat(),
-            "email": self.email,
-        }
 
-
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Activity:
     activity_id: str
     participant_id: str
     performed_on: date
     activity_type: ActivityType
     duration_minutes: int
-
-    def to_dict(self) -> ActivityDataDict:
-        return {
-            "activity_id": self.activity_id,
-            "participant_id": self.participant_id,
-            "date": self.performed_on.isoformat(),
-            "activity_type": self.activity_type.value,
-            "duration_minutes": self.duration_minutes,
-        }
