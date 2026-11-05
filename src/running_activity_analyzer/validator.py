@@ -9,7 +9,9 @@ from typing import ClassVar, override
 from email_validator import EmailNotValidError, validate_email
 
 from running_activity_analyzer.model import (
+    ActivityDataDict,
     ActivityType,
+    ParticipantDataDict,
 )
 
 logger = logging.getLogger(__name__)
@@ -65,9 +67,12 @@ class UniqueIdValidator:
 
 @dataclass
 class Validator:
-    required_keys: list[str] = field(default_factory=list)
+    required_keys: ClassVar[frozenset[str]]
 
     def validate(self, data: Mapping[str, object]) -> ValidationResult:
+        if not getattr(self, "required_keys", None):
+            raise ValueError("Validator must define required_keys")
+
         result = ValidationResult()
         record_id = self.get_record_id(data)
 
@@ -101,7 +106,7 @@ class Validator:
         return isinstance(value, str) and bool(value.strip())
 
     @staticmethod
-    def is_positive(data: int | str) -> bool:
+    def is_positive(data: object) -> bool:
         return type(data) is int and data > 0
 
     @staticmethod
@@ -153,15 +158,7 @@ class Validator:
 
 @dataclass
 class ParticipantDataDictValidator(Validator):
-    def __post_init__(self) -> None:
-        if not self.required_keys:
-            self.required_keys = [
-                "participant_id",
-                "first_name",
-                "last_name",
-                "birth_date",
-                "email",
-            ]
+    required_keys: ClassVar[frozenset[str]] = ParticipantDataDict.__required_keys__
 
     @override
     def validate(self, data: Mapping[str, object]) -> ValidationResult:
@@ -213,18 +210,10 @@ class ParticipantDataDictValidator(Validator):
 
 @dataclass
 class ActivityDataDictValidator(Validator):
+    required_keys: ClassVar[frozenset[str]] = ActivityDataDict.__required_keys__
+
     MIN_DURATION_MINUTES: ClassVar[int] = 1
     MAX_DURATION_MINUTES: ClassVar[int] = 1440
-
-    def __post_init__(self) -> None:
-        if not self.required_keys:
-            self.required_keys = [
-                "activity_id",
-                "participant_id",
-                "date",
-                "activity_type",
-                "duration_minutes",
-            ]
 
     @override
     def validate(self, data: Mapping[str, object]) -> ValidationResult:

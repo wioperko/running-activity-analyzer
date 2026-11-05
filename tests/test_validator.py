@@ -19,6 +19,13 @@ from running_activity_analyzer.validator import (
 # Base Validator tests
 
 
+def test_base_validator_requires_defined_keys() -> None:
+    validator = Validator()
+
+    with pytest.raises(ValueError, match="must define required_keys"):
+        validator.validate({})
+
+
 @pytest.mark.parametrize(
     "data, expected",
     [
@@ -45,40 +52,16 @@ from running_activity_analyzer.validator import (
     ],
 )
 def test_if_has_required_keys(data: ParticipantDataDict, expected: bool) -> None:
-    required_keys = [
-        "participant_id",
-        "first_name",
-        "last_name",
-        "birth_date",
-        "email",
-    ]
-    validator = Validator(required_keys)
+    validator = ParticipantDataDictValidator()
     assert validator.has_required_keys(data) == expected
 
 
-@pytest.mark.parametrize(
-    "required_keys, data, expected",
-    [
-        (
-            [
-                "participant_id",
-                "first_name",
-                "last_name",
-                "birth_date",
-                "email",
-            ],
-            {},
-            False,
-        ),
-        ([], {}, True),
-    ],
-)
-def test_validate_required_keys(
-    required_keys: list[str], data: ParticipantDataDict, expected: bool
-) -> None:
-    validator = Validator(required_keys)
-    result = validator.validate(data)
-    assert result.is_valid == expected, result.errors
+def test_validate_required_keys() -> None:
+
+    validator = ParticipantDataDictValidator()
+    result = validator.validate({})
+    assert not result.is_valid
+    assert len(result.errors) == len(ParticipantDataDict.__required_keys__)
 
 
 @pytest.mark.parametrize(
