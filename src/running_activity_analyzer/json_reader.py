@@ -6,7 +6,7 @@ class InvalidJsonFileError(Exception):
     pass
 
 
-class FileReader:
+class JsonFileReader:
     def read(self, filename: str | Path) -> list[dict[str, object]]:
         try:
             with open(filename, encoding="utf-8") as file:
@@ -23,11 +23,3 @@ class FileReader:
             )
 
         return data
-
-
-class ParticipantJsonFileReader(FileReader):
-    pass
-
-
-class ActivityJsonDataReader(FileReader):
-    pass

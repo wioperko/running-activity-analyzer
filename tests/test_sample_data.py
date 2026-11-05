@@ -5,9 +5,8 @@ from running_activity_analyzer.converter import (
     ActivityConverter,
     ParticipantConverter,
 )
-from running_activity_analyzer.file_service import (
-    ActivityJsonDataReader,
-    ParticipantJsonFileReader,
+from running_activity_analyzer.json_reader import (
+    JsonFileReader,
 )
 from running_activity_analyzer.model import ActivityDataDict, ParticipantDataDict
 from running_activity_analyzer.validator import (
@@ -20,7 +19,7 @@ DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 
 
 def test_sample_activities_are_valid_and_convertible() -> None:
-    records = ActivityJsonDataReader().read(DATA_DIR / "activities.json")
+    records = JsonFileReader().read(DATA_DIR / "activities.json")
     validator = ActivityDataDictValidator()
     converter = ActivityConverter()
 
@@ -36,7 +35,7 @@ def test_sample_activities_are_valid_and_convertible() -> None:
 
 
 def test_sample_participants_are_valid_and_convertible() -> None:
-    records = ParticipantJsonFileReader().read(DATA_DIR / "participants.json")
+    records = JsonFileReader().read(DATA_DIR / "participants.json")
     validator = ParticipantDataDictValidator()
     converter = ParticipantConverter()
 

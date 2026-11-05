@@ -15,6 +15,13 @@ The project will be divided into the following layers:
 * service layer
 * testing
 
+## Glossary
+
+- **Participant** — a person who performs sports activities,
+  including running, cycling, swimming, strength training,
+  and Pilates.
+- **Activity** — a recorded sports activity performed by a participant.
+
 ---
 
 # Data Structure
@@ -115,13 +122,15 @@ The project will be divided into the following layers.
 ```text
 JSON files
     ↓
-Repositories
+JsonFileReader
     ↓
 Validation
     ↓
 Conversion
     ↓
-Data models
+Domain models
+    ↓
+Repositories
     ↓
 Service layer
     ↓
@@ -160,7 +169,7 @@ Data retrieved from JSON files will be converted into appropriate Python objects
 
 ## Repositories
 
-Repositories will be responsible for communicating with the JSON files and retrieving data.
+Repositories will provide access to validated domain objects by coordinating JSON reading, validation, and conversion.
 
 Planned repositories:
 
@@ -182,7 +191,6 @@ The service should make it possible to retrieve the total duration for each acti
 
 Tests will cover the individual application layers:
 
-* models
 * validation
 * conversion
 * repositories
