@@ -13,8 +13,8 @@ def test_file_reader_participant(
     participants_file: Path, participants_data: list[ParticipantDataDict]
 ) -> None:
     reader = JsonFileReader()
-    runners = reader.read(participants_file)
-    assert runners == participants_data
+    participants = reader.read(participants_file)
+    assert participants == participants_data
 
 
 def test_file_reader_activity(
@@ -38,6 +38,25 @@ def test_reader_rejects_list_without_json_objects(tmp_path: Path) -> None:
 def test_reader_raises_custom_error_for_invalid_json(tmp_path: Path) -> None:
     file_path = tmp_path / "invalid.json"
     file_path.write_text("{invalid json}", encoding="utf-8")
+
+    reader = JsonFileReader()
+
+    with pytest.raises(InvalidJsonFileError):
+        reader.read(file_path)
+
+
+def test_reader_raises_custom_error_for_missing_file(tmp_path: Path) -> None:
+    file_path = tmp_path / "missing.json"
+
+    reader = JsonFileReader()
+
+    with pytest.raises(InvalidJsonFileError):
+        reader.read(file_path)
+
+
+def test_reader_rejects_json_object_instead_of_list(tmp_path: Path) -> None:
+    file_path = tmp_path / "invalid.json"
+    file_path.write_text('{"participant_id": "P001"}', encoding="utf-8")
 
     reader = JsonFileReader()
 

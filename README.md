@@ -167,6 +167,13 @@ Data retrieved from JSON files will be converted into appropriate Python objects
 * Activity type strings will be converted into `ActivityType` enum members.
 * Other values will be represented according to the types defined in the domain models.
 
+Conversion is performed only after a record has passed validation.
+
+Invalid records are not passed to converters. This prevents
+conversion errors caused by missing or incorrectly formatted data.
+
+Repositories will be responsible for enforcing this sequence.
+
 ## Repositories
 
 Repositories will provide access to validated domain objects by coordinating JSON reading, validation, and conversion.
@@ -195,3 +202,9 @@ Tests will cover the individual application layers:
 * conversion
 * repositories
 * service logic
+
+### Future improvements
+
+- Organize tests into `tests/unit` and `tests/integration`.
+- Add acceptance tests based on the project specification
+  once the repository and service layers are implemented.
