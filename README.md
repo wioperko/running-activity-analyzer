@@ -208,3 +208,69 @@ Tests will cover the individual application layers:
 - Organize tests into `tests/unit` and `tests/integration`.
 - Add acceptance tests based on the project specification
   once the repository and service layers are implemented.
+
+## Installation and Development
+
+### Requirements
+
+- Python 3.13 or newer
+- [uv](https://docs.astral.sh/uv/)
+
+### Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/wioperko/running-activity-analyzer.git
+cd running-activity-analyzer
+```
+
+Install the project and its development dependencies:
+
+```bash
+uv sync
+```
+
+### Running Tests
+
+Run the test suite with coverage:
+
+```bash
+uv run pytest
+```
+
+The project requires at least 90% test coverage.
+
+### Type Checking
+
+Run Mypy in strict mode:
+
+```bash
+uv run mypy src tests
+```
+
+Strict mode is enabled in `pyproject.toml`.
+
+### Linting and Formatting
+
+Check code quality:
+
+```bash
+uv run ruff check .
+```
+
+Check code formatting:
+
+```bash
+uv run ruff format --check .
+```
+
+Automatically format Python files:
+
+```bash
+uv run ruff format .
+```
+
+### Application Status
+
+The JSON reader, validators, converters, and their tests are implemented. Repository, service, and command-line functionality are planned for subsequent development stages.
