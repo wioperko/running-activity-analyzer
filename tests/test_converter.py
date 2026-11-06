@@ -56,11 +56,7 @@ def test_participant_converter_from_json(
 
     converter = ParticipantConverter()
     result = converter.convert(data)
-    assert result.participant_id == participant.participant_id
-    assert result.first_name == participant.first_name
-    assert result.last_name == participant.last_name
-    assert result.birth_date == participant.birth_date
-    assert result.email == participant.email
+    assert result == participant
 
 
 @pytest.mark.parametrize(
@@ -106,8 +102,4 @@ def test_activity_converter_from_json(
 
     converter = ActivityConverter()
     result = converter.convert(data)
-    assert result.activity_id == activity.activity_id
-    assert result.participant_id == activity.participant_id
-    assert result.performed_on == activity.performed_on
-    assert result.activity_type == activity.activity_type
-    assert result.duration_minutes == activity.duration_minutes
+    assert result == activity

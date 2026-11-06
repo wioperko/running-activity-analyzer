@@ -290,6 +290,30 @@ def test_participant_validator_rejects_blank_text_fields(
     assert any(error.field_name == field_name for error in result.errors)
 
 
+@pytest.mark.parametrize(
+    "email",
+    [
+        "invalid-email",
+        "anna.example.com",
+        "@example.com",
+        "anna@",
+    ],
+)
+def test_participant_validator_rejects_invalid_email(email: str) -> None:
+    data: ParticipantDataDict = {
+        "participant_id": "P001",
+        "first_name": "Anna",
+        "last_name": "Kowalska",
+        "birth_date": "1994-06-15",
+        "email": email,
+    }
+
+    result = ParticipantDataDictValidator().validate(data)
+
+    assert not result.is_valid
+    assert any(error.field_name == "email" for error in result.errors)
+
+
 def test_participant_validator_rejects_future_birth_date() -> None:
     future_date = date.today() + timedelta(days=1)
 
@@ -441,6 +465,27 @@ def test_activity_validator_rejects_blank_activity_type(
     data: ActivityDataDict = {
         **valid_data,
         "activity_type": blank_value,
+    }
+
+    result = ActivityDataDictValidator().validate(data)
+
+    assert not result.is_valid
+    assert any(error.field_name == "activity_type" for error in result.errors)
+
+
+@pytest.mark.parametrize(
+    "activity_type",
+    ["DANCING", "Running", "SWIM"],
+)
+def test_activity_validator_rejects_invalid_activity_type(
+    activity_type: str,
+) -> None:
+    data: ActivityDataDict = {
+        "activity_id": "A001",
+        "participant_id": "P001",
+        "date": "2026-09-01",
+        "activity_type": activity_type,
+        "duration_minutes": 45,
     }
 
     result = ActivityDataDictValidator().validate(data)
