@@ -4,9 +4,7 @@
 
 The goal of the project is to create an application for managing data about people and their sports activities.
 
-The project will be inspired by the structure and methodology of a project involving products, customers, and orders, but it will use a different domain and its own data aggregation rules.
-
-The application will communicate with JSON files that store information about runners and their completed activities.
+The application will communicate with JSON files that store information about participants and their completed activities.
 
 The project will be divided into the following layers:
 
@@ -17,28 +15,35 @@ The project will be divided into the following layers:
 * service layer
 * testing
 
+## Glossary
+
+- **Participant** — a person who performs sports activities,
+  including running, cycling, swimming, strength training,
+  and Pilates.
+- **Activity** — a recorded sports activity performed by a participant.
+
 ---
 
 # Data Structure
 
-### Runners
+### Participants
 
-Each person has:
+Each participant has:
 
 * a unique ID
 * first name
 * last name
-* age
+* date of birth
 * email address
 
 Example:
 
 ```json
 {
-    "runner_id": "R001",
+    "participant_id": "P001",
     "first_name": "Anna",
     "last_name": "Kowalska",
-    "age": 33,
+    "birth_date": "1994-06-15",
     "email": "anna@example.com"
 }
 ```
@@ -48,7 +53,7 @@ Example:
 Each activity has:
 
 * a unique ID
-* runner ID
+* participant ID
 * date
 * activity type
 * duration
@@ -68,30 +73,30 @@ Example:
 ```json
 {
     "activity_id": "A001",
-    "runner_id": "R001",
+    "participant_id": "P001",
     "date": "2026-09-15",
-    "activity": "RUNNING",
-    "duration_minutes": 52.5
+    "activity_type": "RUNNING",
+    "duration_minutes": 52
 }
 ```
 
 ## Data Organization
 
-After retrieving the data from the JSON files, it will be processed into a structure that allows aggregation of the time spent by individual runners on specific activities.
+After retrieving the data from the JSON files, it will be processed into a structure that allows aggregation of the time spent by individual participants on specific activities.
 
 Example structure:
 
 ```python
 {
-    Runner("R001"): {
-        Activity.RUNNING: 320,
-        Activity.STRENGTH: 90,
-        Activity.PILATES: 120
+    participant: {
+        ActivityType.RUNNING: 320,
+        ActivityType.STRENGTH: 90,
+        ActivityType.PILATES: 120,
     }
 }
 ```
 
-The value represents the total number of minutes spent by a given runner on a given activity.
+Here, `participant` represents an instance of the `Participant` class. The values represent the total number of minutes spent by a given participant on each activity type.
 
 ## Example Result
 
@@ -117,15 +122,17 @@ The project will be divided into the following layers.
 ```text
 JSON files
     ↓
-Repositories
-    ↓
-Conversion
-    ↓
-Data models
+JsonFileReader
     ↓
 Validation
     ↓
-Services
+Conversion
+    ↓
+Domain models
+    ↓
+Repositories
+    ↓
+Service layer
     ↓
 Aggregated results
 
@@ -136,7 +143,7 @@ Tests → cover all application layers
 
 Models representing:
 
-* `Runner`
+* `Participant`
 * `Activity`
 
 as well as an enum defining the activity type.
@@ -147,24 +154,33 @@ Validation will include, among other things:
 
 * valid IDs
 * valid email addresses
-* valid age
+* valid date of birth
 * valid activity type
-* positive duration value
-* valid relationship between runner and activity IDs
+* duration between 1 and 1440 minutes
+* valid relationship between participant and activity IDs
 
 ## Conversion
 
 Data retrieved from JSON files will be converted into appropriate Python objects.
 
-Numeric values for which precision is important will be represented using `Decimal`.
+* ISO-formatted date strings will be converted into `date` objects.
+* Activity type strings will be converted into `ActivityType` enum members.
+* Other values will be represented according to the types defined in the domain models.
+
+Conversion is performed only after a record has passed validation.
+
+Invalid records are not passed to converters. This prevents
+conversion errors caused by missing or incorrectly formatted data.
+
+Repositories will be responsible for enforcing this sequence.
 
 ## Repositories
 
-Repositories will be responsible for communicating with the JSON files and retrieving data.
+Repositories will provide access to validated domain objects by coordinating JSON reading, validation, and conversion.
 
 Planned repositories:
 
-* `RunnerRepository`
+* `ParticipantRepository`
 * `ActivityRepository`
 
 ## Service Layer
@@ -173,17 +189,88 @@ The service layer will be responsible for business logic, primarily data aggrega
 
 
 ```text
-get_activity_duration_by_runner()
+get_activity_duration_by_participant()
 ```
 
-The service should make it possible to retrieve the total duration for each activity type for a given runner.
+The service should make it possible to retrieve the total duration for each activity type for a given participant.
 
 ## Testing
 
 Tests will cover the individual application layers:
 
-* models
 * validation
 * conversion
 * repositories
 * service logic
+
+### Future improvements
+
+- Organize tests into `tests/unit` and `tests/integration`.
+- Add acceptance tests based on the project specification
+  once the repository and service layers are implemented.
+
+## Installation and Development
+
+### Requirements
+
+- Python 3.13 or newer
+- [uv](https://docs.astral.sh/uv/)
+
+### Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/wioperko/running-activity-analyzer.git
+cd running-activity-analyzer
+```
+
+Install the project and its development dependencies:
+
+```bash
+uv sync
+```
+
+### Running Tests
+
+Run the test suite with coverage:
+
+```bash
+uv run pytest
+```
+
+The project requires at least 90% test coverage.
+
+### Type Checking
+
+Run Mypy in strict mode:
+
+```bash
+uv run mypy src tests
+```
+
+Strict mode is enabled in `pyproject.toml`.
+
+### Linting and Formatting
+
+Check code quality:
+
+```bash
+uv run ruff check .
+```
+
+Check code formatting:
+
+```bash
+uv run ruff format --check .
+```
+
+Automatically format Python files:
+
+```bash
+uv run ruff format .
+```
+
+### Application Status
+
+The JSON reader, validators, converters, and their tests are implemented. Repository, service, and command-line functionality are planned for subsequent development stages.
