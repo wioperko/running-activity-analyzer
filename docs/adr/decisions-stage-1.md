@@ -96,17 +96,20 @@ Adding another type requires an update to the specification.
 
 **Rationale:** Using one term simplifies the domain language and helps keep the names of classes, types, validators, converters, and documentation consistent.
 
-**Implementation status:** The main classes and tests have been renamed to use `Participant`. The data file `data/runners.json` is planned to be renamed to `data/participants.json`, and all references to it should be updated.
+**Implementation status:** Implemented. The domain models, validators, converters, tests, and documentation use the term Participant. The sample data is stored in data/participants.json.
 
 ---
 
-## Summary before closing Stage 1
+## Stage 1 Decision Summary
 
-Before considering the stage consistent with these decisions, the following items must be resolved and/or implemented:
+All required Stage 1 decisions (D1–D7 and D16–D18)
+have been documented with their rationale.
 
-1. **D6:** Add validation for participant and activity ID patterns and uniqueness within the respective data sets.
-2. **D16:** Confirm that writers for source records are excluded from Stage 1, or identify a specific use case that justifies retaining them. Consider saving aggregated results separately under D14/D15.
-3. **D18:** Rename `data/runners.json` to `data/participants.json` and update all references.
-4. After the decisions have been agreed, update the code, data, documentation, and tests, then rerun quality checks.
+### Remaining work
 
-This document covers the decisions required in Step 2: D1–D7 and D16–D18. `docs/zalozenia.md` (Step 4) and `docs/specyfikacja.md` (Step 5) remain separate deliverables for later steps.
+- Integrate dataset-level validation into repositories.
+- Enforce validation before conversion.
+- Consider exporting aggregated results in a later stage.
+
+The assumptions document (`docs/zalozenia.md`) and specification
+(`docs/specyfikacja.md`) will be prepared in subsequent steps.

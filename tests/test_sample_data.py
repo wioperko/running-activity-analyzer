@@ -20,6 +20,8 @@ DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 
 def test_sample_activities_are_valid_and_convertible() -> None:
     records = JsonFileReader().read(DATA_DIR / "activities.json")
+    assert len(records) == 8
+
     validator = ActivityDataDictValidator()
     converter = ActivityConverter()
 
