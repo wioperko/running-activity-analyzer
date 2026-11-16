@@ -6,8 +6,6 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = ["email-validator>=2.3.0"]
 
-[project.scripts]
-activity-report = "running_activity_analyzer.cli:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -22,8 +20,7 @@ addopts = "--cov=running_activity_analyzer --cov-fail-under=90"
 
 [tool.mypy]
 strict = true
-mypy_path = "src"
-explicit_package_bases = true
+
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]

@@ -76,7 +76,7 @@ class Validator:
         result = ValidationResult()
         record_id = self.get_record_id(data)
 
-        for key in self.required_keys:
+        for key in sorted(self.required_keys):
             if key not in data:
                 result.add(
                     record_id=record_id,
@@ -93,21 +93,9 @@ class Validator:
                 return value
         return None
 
-    def has_required_keys(self, data: Mapping[str, object]) -> bool:
-        missing_keys = [key for key in self.required_keys if key not in data]
-
-        if missing_keys:
-            logger.error("Missing required keys: %s", missing_keys)
-            return False
-        return True
-
     @staticmethod
     def is_non_empty_string(value: object) -> bool:
         return isinstance(value, str) and bool(value.strip())
-
-    @staticmethod
-    def is_positive(data: object) -> bool:
-        return type(data) is int and data > 0
 
     @staticmethod
     def is_int_in_range(value: object, minimum: int, maximum: int) -> bool:

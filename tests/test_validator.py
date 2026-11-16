@@ -26,60 +26,12 @@ def test_base_validator_requires_defined_keys() -> None:
         validator.validate({})
 
 
-@pytest.mark.parametrize(
-    "data, expected",
-    [
-        (
-            {
-                "participant_id": "P001",
-                "first_name": "Anna",
-                "last_name": "Kowalska",
-                "birth_date": "1994-06-15",
-                "email": "anna.kowalska@example.com",
-            },
-            True,
-        ),
-        (
-            {
-                "participant_id": "P002",
-                "first_name": "Piotr",
-                "last_name": "Nowak",
-                "birth_date": "1984-06-15",
-                "e": "piotr.nowak@example.com",
-            },
-            False,
-        ),
-    ],
-)
-def test_if_has_required_keys(data: ParticipantDataDict, expected: bool) -> None:
-    validator = ParticipantDataDictValidator()
-    assert validator.has_required_keys(data) == expected
-
-
 def test_validate_required_keys() -> None:
 
     validator = ParticipantDataDictValidator()
     result = validator.validate({})
     assert not result.is_valid
     assert len(result.errors) == len(ParticipantDataDict.__required_keys__)
-
-
-@pytest.mark.parametrize(
-    "value, expected",
-    [
-        (7, True),
-        (0, False),
-        (-8, False),
-        ("5.5", False),
-        ("aaa", False),
-        ("0", False),
-        ("-5.5", False),
-        (True, False),
-        (False, False),
-    ],
-)
-def test_is_positive(value: int | str, expected: bool) -> None:
-    assert Validator.is_positive(value) == expected
 
 
 @pytest.mark.parametrize(
@@ -139,6 +91,22 @@ def test_if_valid_email(email: object, expected: bool) -> None:
 def test_is_valid_date(value: str, expected: bool) -> None:
     parsed_data = Validator.parse_iso_date(value)
     assert (parsed_data is not None) == expected
+
+
+@pytest.mark.parametrize("value", ["20260901", "2026-W36-2"])
+def test_activity_validator_rejects_non_canonical_date(value: str) -> None:
+    data: ActivityDataDict = {
+        "activity_id": "A001",
+        "participant_id": "P001",
+        "date": value,
+        "activity_type": "RUNNING",
+        "duration_minutes": 45,
+    }
+
+    result = ActivityDataDictValidator().validate(data)
+
+    assert not result.is_valid
+    assert any(error.field_name == "date" for error in result.errors)
 
 
 @pytest.mark.parametrize(
